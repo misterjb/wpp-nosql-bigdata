@@ -1,0 +1,40 @@
+Download an Ubuntu ISO-image from 
+http://www.ubuntu.com/download
+
+Download VirtualBox from
+http://www.virtualbox.org/wiki/Downloads
+
+Install VirtualBox using the easy step-by-step installer
+
+Start VirtualBox by double-clicking on its icon or whatever you do on your OS to start an installed application.
+Click on the "New" blue sun-looking icon in the VirtualBox GUI to create a new VM
+
+sudo apt-get install default-jdk
+
+sudo apt-get install python3
+
+http://download.redis.io/redis-stable.tar.gz
+tar -xf redis-stable.tar.gz && cd redis-stable
+make
+make test
+
+./redis-server
+./redis-cli
+
+https://neo4j.com/artifact.php?name=neo4j-community-3.1.2-unix.tar.gz
+
+nano ~/.bashrc
+export REDIS_HOME=/home/nosql/Downloads/redis-stable/src
+export NEO4J_HOME=/home/nosql/Downloads/neo4j-community-3.1.2/bin
+
+sudo $NEO4J_HOME/neo4j console
+http://localhost:7474
+
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F(BA15703C6
+echo "deb http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse” | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list
+sudo apt-get update
+sudo apt-get install -y mongodb
+sudo service mongodb start
+http://localhost:27017/
+sudo service mongodb stop
+sudo service mongodb status
