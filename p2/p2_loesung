@@ -14,25 +14,32 @@ Value (JSON): {"city" : "AGAWAM", "loc" : [ -72.622739, 42.070206 ], "pop" : 153
 
 Import:
 
+package com.nosql;
+
 import org.json.JSONObject;
 import redis.clients.jedis.Jedis;
 
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 public class Redis {
     private static Jedis jedis;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         jedis = new Jedis("localhost", 6379);
         System.out.println(jedis.ping());
 
-        this.import();
+        importJson();
     }
 
-    public static void import() throws IOException {
-        FileReader freader = new FileReader("./plz.data");
-        BufferedReader breader = new BufferedReader(fr);
+    public static void importJson() throws IOException {
+        FileReader freader = new FileReader("./res/plz.data");
+        BufferedReader breader = new BufferedReader(freader);
         String dataline = breader.readLine();
 
         while (dataline != null) {
@@ -43,7 +50,7 @@ public class Redis {
             jedis.set(key, value);
             dataline = breader.readLine();
         }
-    breader.close();
+        breader.close();
     }
 }
 
@@ -52,7 +59,7 @@ b)
 public class Redis {
     private static Jedis jedis;
 
-    public static void main(String[] args)  {
+    public static void main(String[] args) throws IOException {
         jedis = new Jedis("localhost", 6379);
         System.out.println(jedis.ping());
 
@@ -66,7 +73,7 @@ public class Redis {
             String city = jsonObject.get("city").toString();
             String state = jsonObject.get("state").toString();
 
-            return "City > " + city + "and State > " + state;
+            return "City > " + city + " and State > " + state;
         }
         return "Keine zutreffende Eingabe!";
     }
@@ -76,12 +83,12 @@ c)
 public class Redis {
     private static Jedis jedis;
 
-    public static void main(String[] args)  {
+    public static void main(String[] args) throws IOException {
         jedis = new Jedis("localhost", 6379);
         System.out.println(jedis.ping());
 
-        System.out.println(findKey("TUMTUM"));
-        System.out.println(findKey("HAMBURG"));
+        System.out.println(findKey("TUMTUM")); //4c
+        System.out.println(findKey("HAMBURG")); //4c
     }
 
     public static String findKey(String city) {
@@ -92,7 +99,7 @@ public class Redis {
             String value = jedis.get(key);
             JSONObject jsonObject = new JSONObject(value);
             if (city.equals(jsonObject.get("city").toString())) {
-                result.add(key);
+                answer.add(key);
             }
         }
 
@@ -107,5 +114,6 @@ public class Redis {
 
 Ergebnisse:
 
-„TUMTUM“ -> 99034
-„HAMBURG“ -> [07419, 14075, 19526, 51640, 54411, 55339, 62045, 71339, 71646]
+City > AGAWAM and State > MA
+[99034]
+[07419, 14075, 19526, 51640, 54411, 55339, 62045, 71339, 71646]
