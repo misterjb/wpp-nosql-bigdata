@@ -1,1 +1,111 @@
+WP NoSQL und BigData
+Aufgabenblatt 2
+Team: Igor Arkhipov und Jannik Bruhns
 
+4. 
+a)
+Datenbankstruktur:
+Beispiel aus plz.dat:
+{ "_id" : "01001", "city" : "AGAWAM", "loc" : [ -72.622739, 42.070206 ], "pop" : 15338, "state" : "MA" }
+
+=>
+Key (Postleitzahl als String): "01001"
+Value (JSON): {"city" : "AGAWAM", "loc" : [ -72.622739, 42.070206 ], "pop" : 15338, "state" : "MA"}
+
+Import:
+
+import org.json.JSONObject;
+import redis.clients.jedis.Jedis;
+
+import java.io.*;
+import java.util.*;
+
+public class Redis {
+    private static Jedis jedis;
+
+    public static void main(String[] args) {
+        jedis = new Jedis("localhost", 6379);
+        System.out.println(jedis.ping());
+
+        this.import();
+    }
+
+    public static void import() throws IOException {
+        FileReader freader = new FileReader("./plz.data");
+        BufferedReader breader = new BufferedReader(fr);
+        String dataline = breader.readLine();
+
+        while (dataline != null) {
+            JSONObject jsonObject = new JSONObject(dataline);
+            String key = (String) jsonObject.get("_id");
+            jsonObject.remove(key);
+            String value = jsonObject.toString();
+            jedis.set(key, value);
+            dataline = breader.readLine();
+        }
+    breader.close();
+    }
+}
+
+
+b)
+public class Redis {
+    private static Jedis jedis;
+
+    public static void main(String[] args)  {
+        jedis = new Jedis("localhost", 6379);
+        System.out.println(jedis.ping());
+
+        System.out.println(getValue("01001"));
+    }
+
+    public static String getValue(String key) {
+        String value = jedis.get(key);
+        if (value != "") {
+            JSONObject jsonObject = new JSONObject(value);
+            String city = jsonObject.get("city").toString();
+            String state = jsonObject.get("state").toString();
+
+            return "City > " + city + "and State > " + state;
+        }
+        return "Keine zutreffende Eingabe!";
+    }
+}
+
+c)
+public class Redis {
+    private static Jedis jedis;
+
+    public static void main(String[] args)  {
+        jedis = new Jedis("localhost", 6379);
+        System.out.println(jedis.ping());
+
+        System.out.println(findKey("TUMTUM"));
+        System.out.println(findKey("HAMBURG"));
+    }
+
+    public static String findKey(String city) {
+        Set<String> keys = jedis.keys("*");
+        List<String> answer = new ArrayList<String>();
+
+        for (String key : keys) {
+            String value = jedis.get(key);
+            JSONObject jsonObject = new JSONObject(value);
+            if (city.equals(jsonObject.get("city").toString())) {
+                result.add(key);
+            }
+        }
+
+        Collections.sort(answer);
+
+        if (answer.isEmpty()) {
+            return "Keine zutreffende Eingabe!";
+        }
+        return answer.toString();
+    }
+}
+
+Ergebnisse:
+
+„TUMTUM“ -> 99034
+„HAMBURG“ -> [07419, 14075, 19526, 51640, 54411, 55339, 62045, 71339, 71646]
