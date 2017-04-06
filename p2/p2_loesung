@@ -117,3 +117,11 @@ Ergebnisse:
 City > AGAWAM and State > MA
 [99034]
 [07419, 14075, 19526, 51640, 54411, 55339, 62045, 71339, 71646]
+
+5.
+a)
+Die DB wurde manuell angelegt (ueber Browser)
+
+b)
+    1. MATCH ((n:class {name:"wp-nosql"})-[:uses]->(x)) RETURN x.name
+    2. MATCH (n:class) WHERE NOT (n)-[:uses]->(:class) RETURN n.name
