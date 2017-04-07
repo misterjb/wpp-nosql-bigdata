@@ -125,3 +125,14 @@ Die DB wurde manuell angelegt (ueber Browser)
 b)
     1. MATCH ((n:class {name:"wp-nosql"})-[:uses]->(x)) RETURN x.name
     2. MATCH (n:class) WHERE NOT (n)-[:uses]->(:class) RETURN n.name
+
+6.
+a)
+Die DB wurde gespeichert und alte (lokale) überschrieben.
+
+b)
+„ConceptNet is a semantic network based on the information in the OMCS database. 
+ConceptNet is expressed as a directed graph whose nodes are concepts, and whose edges 
+are assertions of common sense about these concepts. Concepts represent sets of closely 
+related natural language phrases, which could be noun phrases, verb phrases, adjective 
+phrases, or clauses.“
