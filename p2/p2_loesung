@@ -136,3 +136,28 @@ ConceptNet is expressed as a directed graph whose nodes are concepts, and whose 
 are assertions of common sense about these concepts. Concepts represent sets of closely 
 related natural language phrases, which could be noun phrases, verb phrases, adjective 
 phrases, or clauses.“
+
+c)
+MATCH (a),(b) WHERE (b)-[:IsA]->(a) AND b.id="/c/en/baseball" RETURN a.id
+
+/c/en/game
+/c/en/sport
+/c/en/person
+/c/en/organization
+/c/en/athlete
+/c/en/popular_sport
+/c/en/band
+/c/en/activity
+/c/en/baseball_player
+/c/en/hobby
+/c/en/music_group
+/c/en/not_play_professionally
+/c/en/good_before_all_player
+/c/en/speech
+/c/en/firewood
+/c/en/perl
+/c/en/c++
+/c/en/organisation
+/c/en/gridiron_football_player
+
+Started streaming 19 records after 3 ms and completed after 12466 ms. 
