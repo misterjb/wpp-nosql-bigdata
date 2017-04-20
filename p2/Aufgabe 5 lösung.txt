@@ -1,3 +1,11 @@
+﻿MATCH (n)
+OPTIONAL MATCH (n)-[r]-()
+DELETE n,r
+
+
+
+
+
 Create(AI:Modul { name: 'AI' }),
 (AD:Modul { name: 'AD' }),
 (AF:Modul { name: 'AF' }),
