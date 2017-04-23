@@ -58,3 +58,54 @@ Ausfuehrungszeit: 3449ms Redis vs 85ms Mongo
 
 Key->Value Abfragen sind gleich effektiv. 
 Value->Key Abfragen sind im Redis Fall deutlich erhoeht (alle keys muessen durchlaufen werden)
+
+8.
+a) Import
+mongo shell oefnnen und dann alle Befehle ausfuehren.
+
+Was korrigiert wurde: 
+jede 'new Date (1887, 09, 29)' wurde zu {year: 1887, month: 9, day: 29} 
+'Frankfurt': weiss' wurde zu 'weiss'
+'Leverkusen': noch :hour" und "minute" hinzugefuegt
+
+b)
+Vereine mit den jeweils folgenden Eigenschaften anzeigen:
+1. mit Namen 'Augsburg'
+db.fussball.find({name: "Augsburg"}) : 1 Dokument 
+2. alle Nike-Vereine, welche schwarz als mindestens eine Vereinsfarbe haben
+db.fussball.find({nike: "j", farben: { $in: ["schwarz"] }}) : 1 Dokument (Frankfurt) 
+3. alle Nike-Vereine, welche weiss und gruen als Vereinsfarbe haben
+db.fussball.find({nike: "j", $and:  [ { farben: { $in: ["weiss"] }}, { farben: { $in: ["gruen"] }} ]}) : 1 Dokument (Werder)
+4. alle Nike-Vereine, welche weiss oder grün als Vereinsfarbe haben
+db.fussball.find({nike: "j",farben: { $in: ["weiss", "gruen"] }}) : 4 Dokumente (Hertha, Augsburg, Frankfurt, Werder)
+5. den Verein mit dem hoechsten Tabellenplatz
+db.fussball.find().sort({Tabellenplatz: 1}).limit(1) : 1 Dokument (Werder) 
+// Tabellenplatz: 1 = aufsteigende Sortierung
+6. alle Vereine, die nicht auf einem Abstiegsplatz stehen
+db.fussball.find( { Tabellenplatz: { $lt: 17 }}) : 11 Dokumente 
+
+c)
+eigene Abfrage: 
+"Wie lautet der durchschnittliche Platz aller Vereine mit/ohne Nike als Sponsor?"
+db.fussball.aggregate( { $group: { _id: "$nike", avgPlace: { $avg: "$Tabellenplatz" }}})
+{ "_id" : "j", "avgPlace" : 10 }
+{ "_id" : "n", "avgPlace" : 12.25 }
+
+d)
+Ausgefuehrt: 
+db.fussball.update({name: "Augsburg"}, {Tabellenplatz: 1})
+Ergebnis: urspruenglicher Eintrag wurde durch neuen Datensatz ersetzt
+
+e)
+1. Aendern sie den Tabellenplatz von Leverkusen auf 2
+db.fussball.update({name: "Leverkusen"}, {$set: {Tabellenplatz: 2}})
+2. Werder soll um einen Tabellenplatz nach vorne gebracht werden
+db.fussball.update({name: "Werder"}, {$inc: {Tabellenplatz:-1}})
+3. Ergaenzen sie fuer den HSV ein Attribut "abgestiegen" mit einem sinnvollen Wert
+db.fussball.update({name: "HSV"}, {$set: {"abgestiegen": "ja"}})
+4. Ergaenzen sie fuer alle Vereine, deren Vereinsfarbe weiss enthaelt, ein Attribut "Waschtemperatur" mit dem Wert 90
+db.fussball.updateMany({farben:{$in:["weiss"]}}, {$set:{ "Waschmaschine": 90}}, false, true)
+// upsert = false, multi = true
+
+9. (Wide-Column Datenbank) 
+Base-Datenbank installiert (Hadoop)
