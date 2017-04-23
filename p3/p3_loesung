@@ -108,4 +108,4 @@ db.fussball.updateMany({farben:{$in:["weiss"]}}, {$set:{ "Waschmaschine": 90}}, 
 // upsert = false, multi = true
 
 9. (Wide-Column Datenbank) 
-Base-Datenbank installiert (Hadoop)
+HBase-Datenbank installiert (mit Hadoop)
