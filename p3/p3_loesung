@@ -55,3 +55,6 @@ d) Vergleich:
 LoC: 182 Redis vs 187 Mongo
 Arbeitszeit: je Implementierung 2 Stunden 
 Ausfuehrungszeit: 3449ms Redis vs 85ms Mongo
+
+Key->Value Abfragen sind gleich effektiv. 
+Value->Key Abfragen sind im Redis Fall deutlich erhoeht (alle keys muessen durchlaufen werden)
