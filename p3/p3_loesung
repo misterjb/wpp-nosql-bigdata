@@ -1,0 +1,57 @@
+7.
+a) Import:
+public static void importJson() throws IOException, JSONException {
+        FileReader freader = new FileReader("./res/plz.data");
+        BufferedReader breader = new BufferedReader(freader);
+        String dataline = breader.readLine();
+
+        while (dataline != null )
+        {
+            Document data = new Document();
+            JSONObject jsonObject = new JSONObject(dataline);
+            for (String key : jsonObject.keySet()) {
+                String val =  String.valueOf(jsonObject.get(key));
+                if (key.equals("_id")) {
+                    key = "id";
+                }
+                data.append(key, val);
+            }
+            collection.insertOne(data);
+            dataline = breader.readLine();
+        }
+        breader.close();
+}
+
+b) PLZ -> Stadt
+public static String getValue(String key) throws JSONException {
+        FindIterable<Document> iterator = collection.find(new Document("id", key));
+        String answer = "";
+        for (Document doc : iterator) {
+            answer += "Ort: " + doc.get("city");
+            answer += ", Bundesstaat: " + doc.get("state") + "\n";
+        }
+        if (answer != "") {
+            return answer;
+        }
+        return "Keine zutreffende Eingabe!";
+}
+
+c) Stadt -> PLZ
+public static String findKey(String city) throws JSONException {
+        FindIterable<Document> iterator = collection.find(new Document("city", city));
+        List<String> answer = new ArrayList<>();
+        for (Document doc : iterator) {
+            answer.add(String.valueOf(doc.get("id")));
+        }
+
+        if (answer.isEmpty()) {
+            return "Keine zutreffende Eingabe!";
+        }
+        return answer.toString();
+}
+
+d) Vergleich:
+
+LoC: 182 Redis vs 187 Mongo
+Arbeitszeit: je Implementierung 2 Stunden 
+Ausfuehrungszeit: 3449ms Redis vs 85ms Mongo
