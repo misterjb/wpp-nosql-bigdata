@@ -1,3 +1,7 @@
+WP NoSQL und BigData
+Aufgabenblatt 3
+Team: Igor Arkhipov und Jannik Bruhns
+
 7.
 a) Import:
 public static void importJson() throws IOException, JSONException {
