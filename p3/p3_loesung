@@ -70,7 +70,7 @@ mongo shell oefnnen und dann alle Befehle ausfuehren.
 Was korrigiert wurde: 
 jede 'new Date (1887, 09, 29)' wurde zu {year: 1887, month: 9, day: 29} 
 'Frankfurt': weiss' wurde zu 'weiss'
-'Leverkusen': noch :hour" und "minute" hinzugefuegt
+'Leverkusen': noch "hour" und "minute" hinzugefuegt
 
 b)
 Vereine mit den jeweils folgenden Eigenschaften anzeigen:
