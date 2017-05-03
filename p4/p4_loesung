@@ -135,7 +135,7 @@ Hadoop wurde installiert
 
 Word Counter:
 
-public class WC {
+public class WordCount {
 
     public static class TokenizerMapper
             extends Mapper<Object, Text, Text, IntWritable>{
@@ -172,7 +172,7 @@ public class WC {
     public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
         Job job = Job.getInstance(conf, "word count");
-        job.setJarByClass(WC.class);
+        job.setJarByClass(WordCount.class);
         job.setMapperClass(TokenizerMapper.class);
         job.setCombinerClass(IntSumReducer.class);
         job.setReducerClass(IntSumReducer.class);
