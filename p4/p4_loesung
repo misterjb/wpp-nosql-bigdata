@@ -4,3 +4,128 @@ Team: Igor Arkhipov und Jannik Bruhns
 
 10.
 a) Import:
+static void importJson() throws IOException {
+        HTableDescriptor htable = new HTableDescriptor(tableName);
+        htable.addFamily( new HColumnDescriptor("values"));
+        System.out.println( "Creating table..." );
+        hbadmin.createTable(htable);
+        System.out.println("Created table in HBase");
+
+        FileReader freader = new FileReader("./res/plz.data");
+        BufferedReader breader = new BufferedReader(freader);
+        String dataline = breader.readLine();
+
+        while (dataline != null) {
+            JSONObject jsonObject = new JSONObject(dataline);
+            String key = (String) jsonObject.get("_id");
+            jsonObject.remove(key);
+            addRecord(key, "values", "loc", jsonObject.get("loc").toString());
+            addRecord(key, "values", "city", jsonObject.get("city").toString());
+            addRecord(key, "values", "state", jsonObject.get("state").toString());
+            addRecord(key, "values", "pop", jsonObject.get("pop").toString());
+            dataline = breader.readLine();
+        }
+        breader.close();
+
+        addColumnFamily();
+    }
+    
+static void addRecord(String rowKey,
+                          String family, String qualifier, String value) throws IOException {
+        Table table = connection.getTable(tableName);
+
+        try {
+            Put put = new Put(Bytes.toBytes(rowKey));
+            put.addColumn(Bytes.toBytes(family), Bytes.toBytes(qualifier), Bytes.toBytes(value));
+            table.put(put);
+            System.out.println("inserted record " + rowKey + " to table " + tableName + " ok.");
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        finally
+        {
+            table.close();
+        }
+}
+    
+b) neu ColumnFamily
+static void addColumnFamily() throws IOException {
+        HColumnDescriptor cd = new HColumnDescriptor("Fussball");
+        hbadmin.disableTable(tableName);
+        hbadmin.addColumn(tableName, cd);
+        hbadmin.enableTable(tableName);
+
+        for (String plz : getCityPLZ("HAMBURG")) {
+            addRecord(plz,"Fussball","Traditionsverein","ja");
+        }
+ }
+ 
+ c) PLZ -> Stadt
+ static String getCity(String rowKey) throws IOException {
+        Table table = connection.getTable(tableName);
+        String answer = "";
+
+        try {
+            Get get = new Get(rowKey.getBytes());
+            Result res = table.get(get);
+
+            for (Cell cell : res.listCells()) {
+                String qualifier = Bytes.toString(CellUtil.cloneQualifier(cell));
+                String value = Bytes.toString(CellUtil.cloneValue(cell));
+                answer += "Qualifier: " + qualifier;
+                answer += ", Value: " + value;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            table.close();
+            if (answer != "") {
+                return answer;
+            }
+            return "Keine zutreffende Eingabe!";
+        }
+}
+
+d) Stadt -> PLZ
+public static String getPLZ(String city) throws IOException {
+        List<String> plz = new ArrayList(getCityPLZ(city));
+        if (plz.isEmpty()) {
+            return "Keine zutreffende Eingabe!";
+        }
+        return plz.toString();
+}
+
+public static List<String> getCityPLZ(String city) throws IOException {
+        Table table = connection.getTable(tableName);
+        List<String> plz = new ArrayList();
+
+        try {
+            Scan s = new Scan();
+            ResultScanner rs = table.getScanner(s);
+            Map<String, List> map = new HashMap();
+            List<String> list = new ArrayList();
+            for (Result r:rs){
+                byte[] value = r.getValue(Bytes.toBytes("values"), Bytes.toBytes("city"));
+                if (Bytes.toString(value).equals(city)) {
+                    byte[] result = r.getRow();
+                    plz.add(Bytes.toString(result));
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            table.close();
+            return plz;
+        }
+}
+
+e) Vergleich:
+
+LoC: 182 Redis vs 187 Mongo vs 262 HBase
+Arbeitszeit: je Implementierung 2 Stunden, HBase ~ 8 Stunden 
+Ausfuehrungszeit: 3449ms Redis vs 85ms Mongo vs 972ms
+
+Key->Value Abfragen sind gleich effektiv. 
+Value->Key Abfragen sind im Redis Fall deutlich erhoeht (alle keys muessen durchlaufen werden).
+Installation von HBase aufwendig.
