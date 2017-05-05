@@ -57,7 +57,11 @@ static void addColumnFamily() throws IOException {
         hbadmin.enableTable(tableName);
 
         for (String plz : getCityPLZ("HAMBURG")) {
-            addRecord(plz,"Fussball","Traditionsverein","ja");
+            addRecord(plz,"Fussball","Heimat","ja");
+        }
+
+        for (String plz : getCityPLZ("BREMEN")) {
+            addRecord(plz,"Fussball","Heimat","ja");
         }
  }
  
