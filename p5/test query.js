@@ -77,6 +77,22 @@ db.orders.aggregate(
 			}
 		},
 
+		// Stage 10
+		{
+			$project: {
+				_id:0,
+				order_id:1,
+				order_number:1,
+				order_dow:1,
+				order_hour_of_day:1,
+			    cart_order:"$prior.add_to_cart_order",
+			    product_id: "$products.product_id",
+			    product_name: "$products.product_name",
+			    aisle: "$aisles.aisle",
+			    department: "$departments.department"
+			}
+		},
+
 	]
 
 	// Created with Studio 3T, the IDE for MongoDB - https://studio3t.com/
