@@ -4,26 +4,19 @@ db.order_products__prior.aggregate(
 	[
 		// Stage 1
 		{
-			$match: {
-				reordered: 1
-			}
-		},
-
-		// Stage 2
-		{
 			$group: {
 			   _id : '$product_id', count : {$sum : 1}
 			}
 		},
 
-		// Stage 3
+		// Stage 2
 		{
 			$sort: {
 			    count: -1
 			}
 		},
 
-		// Stage 4
+		// Stage 3
 		{
 			$lookup: {
 			    "from" : "products",
@@ -33,14 +26,14 @@ db.order_products__prior.aggregate(
 			}
 		},
 
-		// Stage 5
+		// Stage 4
 		{
 			$unwind: {
 			    path : "$products"
 			}
 		},
 
-		// Stage 6
+		// Stage 5
 		{
 			$lookup: {
 			    "from" : "aisles",
@@ -50,14 +43,14 @@ db.order_products__prior.aggregate(
 			}
 		},
 
-		// Stage 7
+		// Stage 6
 		{
 			$unwind: {
 			    path : "$aisles"
 			}
 		},
 
-		// Stage 8
+		// Stage 7
 		{
 			$lookup: {
 			    "from" : "departments",
@@ -67,19 +60,19 @@ db.order_products__prior.aggregate(
 			}
 		},
 
-		// Stage 9
+		// Stage 8
 		{
 			$unwind: {
 			    path : "$departments" 
 			}
 		},
 
-		// Stage 10
+		// Stage 9
 		{
 			$limit: 25
 		},
 
-		// Stage 11
+		// Stage 10
 		{
 			$project: {
 			    _id:0,
@@ -93,5 +86,6 @@ db.order_products__prior.aggregate(
 
 	]
 
+	// Created with Studio 3T, the IDE for MongoDB - https://studio3t.com/
 
 );

@@ -4,25 +4,31 @@ db.orders.aggregate(
 	[
 		// Stage 1
 		{
-			$group: {
-			   _id : '$order_hour_of_day', count : {$sum : 1}
+			$match: {
+				'order_dow': 0
 			}
 		},
 
 		// Stage 2
 		{
-			$sort: {
-			    count: -1
+			$group: {
+			   _id : '$order_hour_of_day', count : {$sum : 1}
 			}
 		},
 
 		// Stage 3
 		{
-			$limit: 10
+			$sort: {
+			    count: -1
+			}
+		},
+		
+		// Stage 4
+		{
+			$limit:  10
 		},
 
 	]
 
-	// Created with Studio 3T, the IDE for MongoDB - https://studio3t.com/
 
 );
